@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/graphql-go/graphql"
 	"github.com/stretchr/testify/assert"
-	"testKuncie/model"
-	"testKuncie/schema"
+	"kunciee/model"
+	"kunciee/schema"
 	"testing"
 )
 
