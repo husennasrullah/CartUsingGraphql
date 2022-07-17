@@ -2,21 +2,21 @@ package resolver
 
 import (
 	"github.com/graphql-go/graphql"
-	"kunciee/testKuncie/model"
+	"kunciee/model"
 )
 
 var InitiateData = model.PopulateProduct()
 var ProductData = &InitiateData
 
-func GetlistProduct (params graphql.ResolveParams) (interface{}, error) {
+func GetlistProduct(params graphql.ResolveParams) (interface{}, error) {
 	//get data to db
 	return ProductData, nil
 }
 
-func GetProductById (params graphql.ResolveParams) (interface{}, error) {
+func GetProductById(params graphql.ResolveParams) (interface{}, error) {
 	for key, tes := range params.Args {
 		switch key {
-		case "sku" :
+		case "sku":
 			sku, ok := tes.(string)
 			if ok {
 				for _, data := range *ProductData {
@@ -25,7 +25,7 @@ func GetProductById (params graphql.ResolveParams) (interface{}, error) {
 					}
 				}
 			}
-		case "qty" :
+		case "qty":
 			qty, ok := tes.(int)
 			if ok {
 				for _, data := range *ProductData {
@@ -39,7 +39,7 @@ func GetProductById (params graphql.ResolveParams) (interface{}, error) {
 	return nil, nil
 }
 
-func CreateProduct (params graphql.ResolveParams) (interface{}, error) {
+func CreateProduct(params graphql.ResolveParams) (interface{}, error) {
 	var product model.Product
 	product.SKU, _ = params.Args["sku"].(string)
 	product.Name, _ = params.Args["name"].(string)

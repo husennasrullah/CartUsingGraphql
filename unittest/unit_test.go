@@ -22,13 +22,13 @@ func TestCart(t *testing.T) {
 			expectedPrice: 99.98,
 		},
 		{
-			name : "Scanned Items: Alexa Speaker, Alexa Speaker, Alexa Speaker",
-			query:  "mutation {addtocart(cart_id: \"test2\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
+			name:          "Scanned Items: Alexa Speaker, Alexa Speaker, Alexa Speaker",
+			query:         "mutation {addtocart(cart_id: \"test2\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
 			expectedPrice: 295.65,
 		},
 		{
-			name : "Scanned Items: MacBook Pro, Raspberry Pi B",
-			query:  "mutation {addtocart(cart_id: \"test2\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
+			name:          "Scanned Items: MacBook Pro, Raspberry Pi B",
+			query:         "mutation {addtocart(cart_id: \"test2\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
 			expectedPrice: 295.65,
 		},
 	}

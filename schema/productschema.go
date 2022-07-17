@@ -2,10 +2,9 @@ package schema
 
 import (
 	"github.com/graphql-go/graphql"
-	"kunciee/testKuncie/model"
-	"kunciee/testKuncie/resolver"
+	"kunciee/model"
+	"kunciee/resolver"
 	"log"
-
 )
 
 var mutationProductType = graphql.NewObject(graphql.ObjectConfig{

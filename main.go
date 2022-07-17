@@ -2,12 +2,10 @@ package main
 
 import (
 	gqlhandler "github.com/graphql-go/graphql-go-handler"
-	"kunciee/testKuncie/model"
-	"kunciee/testKuncie/schema"
+	"kunciee/model"
+	"kunciee/schema"
 	"log"
 	"net/http"
-
-
 )
 
 var InitiateData = model.PopulateProduct()

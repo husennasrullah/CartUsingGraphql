@@ -63,4 +63,3 @@ func PopulateProduct() []Product {
 
 	return products
 }
-

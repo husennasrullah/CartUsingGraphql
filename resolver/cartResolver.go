@@ -3,7 +3,7 @@ package resolver
 import (
 	"encoding/json"
 	"github.com/graphql-go/graphql"
-	"kunciee/testKuncie/model"
+	"kunciee/model"
 )
 
 var InitiateCart []model.Cart

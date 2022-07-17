@@ -28,7 +28,6 @@ type AddCart struct {
 	AddToCart Cart `json:"addtocart"`
 }
 
-
 var FreeItemType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "free_item",
