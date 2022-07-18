@@ -8,6 +8,7 @@ pipeline {
          }
         stage('Test') {
             steps {
+                 echo 'Running unit test...'
                 sh 'go test ./unittest'
             }
         }
