@@ -6,7 +6,7 @@ pipeline {
                sh 'go build'
             }
          }
-        stage('Test') {
+        stage('Unit Tests') {
             steps {
                 echo 'Running unit test...'
                 sh 'go test ./unittest'
