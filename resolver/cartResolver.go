@@ -77,6 +77,8 @@ func AddProductToCart(p graphql.ResolveParams) (result interface{}, err error) {
 
 func calculateOrder(orders *model.Cart) (status bool, fieldName string, totalPrice float64) {
 	//get data product in existing ProductData memory
+	var freeItems []Bonus
+	var priceRed float64
 	product := *ProductData
 
 	//loop over order item
@@ -90,8 +92,12 @@ func calculateOrder(orders *model.Cart) (status bool, fieldName string, totalPri
 					return
 				}
 
-				price := CalculatePromotion(product[j], orders.Item[i].QtyOrder)
+				price, freeItem := CalculatePromotion(product[j], orders.Item[i].QtyOrder)
 				totalPrice += price
+
+				if freeItem.SKU != "" {
+					freeItems = append(freeItems, freeItem)
+				}
 
 				//set new qty to data product
 				product[j].Qty = product[j].Qty - orders.Item[i].QtyOrder
@@ -100,10 +106,35 @@ func calculateOrder(orders *model.Cart) (status bool, fieldName string, totalPri
 		}
 	}
 
+	if len(freeItems) > 0 {
+		priceRed = CalculateFreeItem(freeItems)
+	}
+
+	totalPrice = totalPrice - priceRed
 	return
 }
 
-func CalculatePromotion(product model.Product, qty int) (price float64) {
+func CalculateFreeItem(free []Bonus) (priceRed float64) {
+	product := *ProductData
+	for i := 0; i < len(free); i++ {
+		if free[i].SKU == "234234" {
+			for j := 0; j < len(product); j++ {
+				if free[i].SKU == product[j].SKU {
+					priceRed += float64(free[i].Qty) * product[j].Price
+				}
+			}
+		}
+
+	}
+	return
+}
+
+type Bonus struct {
+	SKU string
+	Qty int
+}
+
+func CalculatePromotion(product model.Product, qty int) (price float64, FreeItem Bonus) {
 	switch product.SKU {
 	//google home
 	case "120P90":
@@ -122,6 +153,9 @@ func CalculatePromotion(product model.Product, qty int) (price float64) {
 	case "43N23P": //macbook pro
 		// tiap pembelian 1 dapat bonus raspberry pi
 		price = float64(qty) * product.Price
+
+		FreeItem.Qty = qty
+		FreeItem.SKU = "234234"
 
 	case "A304SD": //alexa speaker
 		// beli lebih dari 3 alexa speaker discount 10%
