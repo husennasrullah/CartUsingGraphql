@@ -28,7 +28,7 @@ func TestCart(t *testing.T) {
 		},
 		{
 			name:          "Scanned Items: MacBook Pro, Raspberry Pi B",
-			query:         "mutation {addtocart(cart_id: \"test2\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
+			query:         "mutation {addtocart(cart_id: \"test3\"item: [{sku: \"A304SD\"qty_order : 3}]){cart_id item { sku name qty_order }total_price free_good {sku name}}}",
 			expectedPrice: 295.65,
 		},
 	}

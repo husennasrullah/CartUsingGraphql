@@ -1,6 +1,9 @@
 pipeline {
     agent any
     stages {
+        stage('SCM') {
+            checkout scm
+        }
          stage('Compile') {
             steps {
                sh 'go build'
