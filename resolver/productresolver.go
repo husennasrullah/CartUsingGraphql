@@ -5,6 +5,7 @@ import (
 	"kunciee/model"
 )
 
+//declare data in array to use as a data inventory
 var InitiateData = model.PopulateProduct()
 var ProductData = &InitiateData
 

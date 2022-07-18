@@ -45,7 +45,7 @@ var mutationCartType = graphql.NewObject(graphql.ObjectConfig{
 			Description: "add product to cart",
 			Args: graphql.FieldConfigArgument{
 				"cart_id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+					Type: graphql.String,
 				},
 				"item": &graphql.ArgumentConfig{
 					Type: graphql.NewList(items),

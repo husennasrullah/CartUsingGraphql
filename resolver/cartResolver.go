@@ -2,10 +2,13 @@ package resolver
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 	"kunciee/model"
 )
 
+//declare an empty array model, used for save data of cart
 var InitiateCart []model.Cart
 var CartData = &InitiateCart
 
@@ -28,19 +31,20 @@ func GetCartById(p graphql.ResolveParams) (interface{}, error) {
 			}
 		}
 	}
-	return nil, nil
+	return nil, fmt.Errorf("unknown data with this Cart_id")
 }
 
-func AddProductToCart(p graphql.ResolveParams) (interface{}, error) {
+func AddProductToCart(p graphql.ResolveParams) (result interface{}, err error) {
 	var tempCart model.Cart
 	for key, value := range p.Args {
 		switch key {
-		case "cart_id":
-			tempCart.CartId = value.(string)
+		//case "cart_id":
+		//	tempCart.CartId = value.(string)
 		case "item":
 			data := value.([]interface{})
 			if len(data) == 0 {
-				//todo return error
+				err = fmt.Errorf("item Cannot Empty")
+				return
 			}
 			for i := 0; i < len(data); i++ {
 				var temp model.Items
@@ -48,44 +52,50 @@ func AddProductToCart(p graphql.ResolveParams) (interface{}, error) {
 				_ = json.Unmarshal(byteData, &temp)
 
 				if temp.SKU == "" || temp.QtyOrder == 0 {
-					//todo return error
+					err = fmt.Errorf("SKU and Qty_Order Cannot Empty")
+					return
 				}
 
 				tempCart.Item = append(tempCart.Item, temp)
 			}
 		}
 
-		isReadyStock, totalPrice := calculateOrder(&tempCart)
-		if !isReadyStock {
-			//todo return error
+		isOutOfStock, fieldErr, totalPrice := calculateOrder(&tempCart)
+		if isOutOfStock {
+			err = fmt.Errorf("item -> %v , Is Out Of Stock", fieldErr)
+			return
 		}
 
+		tempCart.CartId = uuid.NewString()
 		tempCart.TotalPrice = totalPrice
-
 	}
+
 	*CartData = append(*CartData, tempCart)
-	return tempCart, nil
+	result = tempCart
+	return
 }
 
-func calculateOrder(orders *model.Cart) (status bool, totalPrice float64) {
-
-	//get data product
+func calculateOrder(orders *model.Cart) (status bool, fieldName string, totalPrice float64) {
+	//get data product in existing ProductData memory
 	product := *ProductData
 
 	//loop over order item
-	for _, order := range orders.Item {
-		for i := 0; i < len(product); i++ {
-			if product[i].SKU == order.SKU {
-				if order.QtyOrder > product[i].Qty {
-					status = false
+	for i := 0; i < len(orders.Item); i++ {
+		for j := 0; j < len(product); j++ {
+			if product[j].SKU == orders.Item[i].SKU {
+
+				if orders.Item[i].QtyOrder > product[j].Qty {
+					fieldName = product[j].Name
+					status = true
 					return
 				}
 
-				price := CalculatePromotion(product[i], order.QtyOrder)
+				price := CalculatePromotion(product[j], orders.Item[i].QtyOrder)
 				totalPrice += price
 
 				//set new qty to data product
-				product[i].Qty = product[i].Qty - order.QtyOrder
+				product[j].Qty = product[j].Qty - orders.Item[i].QtyOrder
+				orders.Item[i].Name = product[j].Name
 			}
 		}
 	}
@@ -112,15 +122,6 @@ func CalculatePromotion(product model.Product, qty int) (price float64) {
 	case "43N23P": //macbook pro
 		// tiap pembelian 1 dapat bonus raspberry pi
 		price = float64(qty) * product.Price
-		//kurangi qty rapberry pi untuk pembelian ini
-		productDataTemp := *ProductData
-		for i := 0; i < len(productDataTemp); i++ {
-			if productDataTemp[i].SKU == "234234" {
-				if productDataTemp[i].Qty > 1 {
-					productDataTemp[i].Qty -= 1
-				}
-			}
-		}
 
 	case "A304SD": //alexa speaker
 		// beli lebih dari 3 alexa speaker discount 10%
